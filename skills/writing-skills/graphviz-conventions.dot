@@ -1,135 +1,212 @@
 digraph STYLE_GUIDE {
     // The style guide for our process DSL, written in the DSL itself
+    // 增强版：添加全局设置、Material Design 颜色、中文支持
 
-    // Node type examples with their shapes
+    // =========================================================================
+    // 全局设置模板 (复制此部分到你的流程图)
+    // =========================================================================
+    rankdir=LR;              // LR=从左到右, TB=从上到下
+    splines=polyline;        // 使用折线避免正交布局重叠
+    nodesep=0.8;             // 节点水平间距
+    ranksep=1.2;             // 层级垂直间距
+    dpi=200;                 // 输出分辨率
+    pad="0.5,0.5";           // 四周边距
+    compound=true;           // 启用跨子图连线
+
+    fontname="Microsoft YaHei";
+    fontsize=16;
+
+    // 节点默认样式
+    node [
+        fontname="Microsoft YaHei",
+        fontsize=14,
+        shape=box,
+        style="filled,rounded",
+        fillcolor="#FFFFFF",
+        color="#333333",
+        penwidth=2.0,
+        margin="0.15,0.08"
+    ];
+
+    // 边默认样式
+    edge [
+        fontname="Microsoft YaHei",
+        fontsize=11,
+        color="#666666",
+        penwidth=1.5,
+        arrowsize=0.8
+    ];
+
+    // =========================================================================
+    // Node type examples with their shapes (颜色增强版)
+    // =========================================================================
     subgraph cluster_node_types {
         label="NODE TYPES AND SHAPES";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        // Questions are diamonds
-        "Is this a question?" [shape=diamond];
+        // Questions are diamonds (黄色)
+        "Is this a question?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
 
-        // Actions are boxes (default)
-        "Take an action" [shape=box];
+        // Actions are boxes (蓝色, default)
+        "Take an action" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
 
-        // Commands are plaintext
-        "git commit -m 'msg'" [shape=plaintext];
+        // Commands are plaintext (等宽字体)
+        "git commit -m 'msg'" [shape=plaintext, fontname="Consolas", fontsize=11];
 
-        // States are ellipses
-        "Current state" [shape=ellipse];
+        // States are ellipses (浅黄)
+        "Current state" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
 
-        // Warnings are octagons
-        "STOP: Critical warning" [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
+        // Warnings are octagons (红底白字)
+        "STOP: Critical warning" [shape=octagon, style=filled, fillcolor="#D32F2F", color="#B71C1C", fontcolor=white];
 
-        // Entry/exit are double circles
-        "Process starts" [shape=doublecircle];
-        "Process complete" [shape=doublecircle];
+        // Entry/exit are double circles (绿色)
+        "Process starts" [shape=doublecircle, fillcolor="#C8E6C9"];
+        "Process complete" [shape=doublecircle, fillcolor="#C8E6C9"];
 
         // Examples of each
-        "Is test passing?" [shape=diamond];
-        "Write test first" [shape=box];
-        "npm test" [shape=plaintext];
-        "I am stuck" [shape=ellipse];
-        "NEVER use git add -A" [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
+        "Is test passing?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Write test first" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "npm test" [shape=plaintext, fontname="Consolas", fontsize=11];
+        "I am stuck" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+        "NEVER use git add -A" [shape=octagon, style=filled, fillcolor="#D32F2F", color="#B71C1C", fontcolor=white];
     }
 
-    // Edge naming conventions
+    // =========================================================================
+    // Edge naming conventions (中文标签增强)
+    // =========================================================================
     subgraph cluster_edge_types {
         label="EDGE LABELS";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        "Binary decision?" [shape=diamond];
-        "Yes path" [shape=box];
-        "No path" [shape=box];
+        "Binary decision?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Yes path" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "No path" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
 
+        // 使用完整标签 (yes/no 或 是/否)
         "Binary decision?" -> "Yes path" [label="yes"];
         "Binary decision?" -> "No path" [label="no"];
 
-        "Multiple choice?" [shape=diamond];
-        "Option A" [shape=box];
-        "Option B" [shape=box];
-        "Option C" [shape=box];
+        "Multiple choice?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Option A" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "Option B" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "Option C" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
 
         "Multiple choice?" -> "Option A" [label="condition A"];
         "Multiple choice?" -> "Option B" [label="condition B"];
         "Multiple choice?" -> "Option C" [label="otherwise"];
 
-        "Process A done" [shape=doublecircle];
-        "Process B starts" [shape=doublecircle];
+        "Process A done" [shape=doublecircle, fillcolor="#C8E6C9"];
+        "Process B starts" [shape=doublecircle, fillcolor="#C8E6C9"];
 
         "Process A done" -> "Process B starts" [label="triggers", style=dotted];
+
+        // 文件交互示例
+        "Update action" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "config.md" [shape=note, fillcolor="#FFF8E1", color="#FFB300"];
+        "Update action" -> "config.md" [label="写入", style=dotted, color="#757575"];
     }
 
-    // Naming patterns
+    // =========================================================================
+    // Naming patterns (语义化命名增强)
+    // =========================================================================
     subgraph cluster_naming_patterns {
         label="NAMING PATTERNS";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        // Questions end with ?
-        "Should I do X?";
-        "Can this be Y?";
-        "Is Z true?";
-        "Have I done W?";
+        // Questions end with ? (决策必须以 ? 结尾)
+        "Should I do X?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Can this be Y?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Is Z true?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Have I done W?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
 
-        // Actions start with verb
-        "Write the test";
-        "Search for patterns";
-        "Commit changes";
-        "Ask for help";
+        // Actions start with verb (动词开头)
+        "Write the test" [fillcolor="#E3F2FD", color="#1565C0"];
+        "Search for patterns" [fillcolor="#E3F2FD", color="#1565C0"];
+        "Commit changes" [fillcolor="#E3F2FD", color="#1565C0"];
+        "Ask for help" [fillcolor="#E3F2FD", color="#1565C0"];
 
-        // Commands are literal
-        "grep -r 'pattern' .";
-        "git status";
-        "npm run build";
+        // Commands are literal (脚本用等宽字体)
+        "grep -r 'pattern' ." [shape=plaintext, fontname="Consolas", fontsize=11];
+        "git status" [shape=plaintext, fontname="Consolas", fontsize=11];
+        "npm run build" [shape=plaintext, fontname="Consolas", fontsize=11];
 
         // States describe situation
-        "Test is failing";
-        "Build complete";
-        "Stuck on error";
+        "Test is failing" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+        "Build complete" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+        "Stuck on error" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+
+        // ❌ BAD: 通用无意义命名 (避免)
+        bad_naming_1 [label="step1", fillcolor="#FFCDD2", color="#C62828"];
+        bad_naming_2 [label="q1", fillcolor="#FFCDD2", color="#C62828"];
+        bad_naming_3 [label="helper2", fillcolor="#FFCDD2", color="#C62828"];
+
+        // ✅ GOOD: 语义化命名 (推荐)
+        good_naming_1 [label="create_files", fillcolor="#C8E6C9", color="#2E7D32"];
+        good_naming_2 [label="is_readonly", fillcolor="#C8E6C9", color="#2E7D32"];
+        good_naming_3 [label="update_plan", fillcolor="#C8E6C9", color="#2E7D32"];
     }
 
-    // Process structure template
+    // =========================================================================
+    // Process structure template (增强版流程模板)
+    // =========================================================================
     subgraph cluster_structure {
         label="PROCESS STRUCTURE TEMPLATE";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        "Trigger: Something happens" [shape=ellipse];
-        "Initial check?" [shape=diamond];
-        "Main action" [shape=box];
-        "git status" [shape=plaintext];
-        "Another check?" [shape=diamond];
-        "Alternative action" [shape=box];
-        "STOP: Don't do this" [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
-        "Process complete" [shape=doublecircle];
+        "Trigger: Something happens" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+        "Initial check?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Main action" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "git status" [shape=plaintext, fontname="Consolas", fontsize=11];
+        "Another check?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Alternative action" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "STOP: Don't do this" [shape=octagon, style=filled, fillcolor="#D32F2F", color="#B71C1C", fontcolor=white];
+        "Process complete" [shape=doublecircle, fillcolor="#C8E6C9"];
 
         "Trigger: Something happens" -> "Initial check?";
         "Initial check?" -> "Main action" [label="yes"];
         "Initial check?" -> "Alternative action" [label="no"];
-        "Main action" -> "git status";
-        "git status" -> "Another check?";
+        "Main action" -> "git status" [style=dotted, arrowhead=none];
+        "Main action" -> "Another check?";
         "Another check?" -> "Process complete" [label="ok"];
-        "Another check?" -> "STOP: Don't do this" [label="problem"];
+        "Another check?" -> "STOP: Don't do this" [label="problem", style=dashed, color="#D32F2F"];
         "Alternative action" -> "Process complete";
     }
 
-    // When to use which shape
+    // =========================================================================
+    // When to use which shape (颜色规范版)
+    // =========================================================================
     subgraph cluster_shape_rules {
         label="WHEN TO USE EACH SHAPE";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        "Choosing a shape" [shape=ellipse];
+        "Choosing a shape" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
 
-        "Is it a decision?" [shape=diamond];
-        "Use diamond" [shape=diamond, style=filled, fillcolor=lightblue];
+        "Is it a decision?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Use diamond" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
 
-        "Is it a command?" [shape=diamond];
-        "Use plaintext" [shape=plaintext, style=filled, fillcolor=lightgray];
+        "Is it a command?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Use plaintext" [shape=plaintext, fontname="Consolas"];
 
-        "Is it a warning?" [shape=diamond];
-        "Use octagon" [shape=octagon, style=filled, fillcolor=pink];
+        "Is it a warning?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Use octagon" [shape=octagon, style=filled, fillcolor="#D32F2F", fontcolor=white];
 
-        "Is it entry/exit?" [shape=diamond];
-        "Use doublecircle" [shape=doublecircle, style=filled, fillcolor=lightgreen];
+        "Is it entry/exit?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Use doublecircle" [shape=doublecircle, fillcolor="#C8E6C9"];
 
-        "Is it a state?" [shape=diamond];
-        "Use ellipse" [shape=ellipse, style=filled, fillcolor=lightyellow];
+        "Is it a state?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "Use ellipse" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
 
-        "Default: use box" [shape=box, style=filled, fillcolor=lightcyan];
+        "Default: use box" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
 
         "Choosing a shape" -> "Is it a decision?";
         "Is it a decision?" -> "Use diamond" [label="yes"];
@@ -144,29 +221,54 @@ digraph STYLE_GUIDE {
         "Is it a state?" -> "Default: use box" [label="no"];
     }
 
-    // Good vs bad examples
+    // =========================================================================
+    // Good vs bad examples (增强对比)
+    // =========================================================================
     subgraph cluster_examples {
         label="GOOD VS BAD EXAMPLES";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
 
-        // Good: specific and shaped correctly
-        "Test failed" [shape=ellipse];
-        "Read error message" [shape=box];
-        "Can reproduce?" [shape=diamond];
-        "git diff HEAD~1" [shape=plaintext];
-        "NEVER ignore errors" [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
+        // Good: specific and shaped correctly (✅)
+        "Test failed" [shape=ellipse, fillcolor="#FFF8E1", color="#FFB300"];
+        "Read error message" [shape=box, fillcolor="#E3F2FD", color="#1565C0"];
+        "Can reproduce?" [shape=diamond, fillcolor="#FFF9C4", color="#F9A825"];
+        "git diff HEAD~1" [shape=plaintext, fontname="Consolas", fontsize=11];
+        "NEVER ignore errors" [shape=octagon, style=filled, fillcolor="#D32F2F", color="#B71C1C", fontcolor=white];
 
         "Test failed" -> "Read error message";
         "Read error message" -> "Can reproduce?";
         "Can reproduce?" -> "git diff HEAD~1" [label="yes"];
 
-        // Bad: vague and wrong shapes
-        bad_1 [label="Something wrong", shape=box];  // Should be ellipse (state)
-        bad_2 [label="Fix it", shape=box];  // Too vague
-        bad_3 [label="Check", shape=box];  // Should be diamond
-        bad_4 [label="Run command", shape=box];  // Should be plaintext with actual command
+        // Bad: vague and wrong shapes (❌)
+        bad_1 [label="Something wrong", shape=box, fillcolor="#FFCDD2", color="#C62828"];  // Should be ellipse (state)
+        bad_2 [label="Fix it", shape=box, fillcolor="#FFCDD2", color="#C62828"];  // Too vague
+        bad_3 [label="Check", shape=box, fillcolor="#FFCDD2", color="#C62828"];  // Should be diamond
+        bad_4 [label="Run command", shape=box, fillcolor="#FFCDD2", color="#C62828"];  // Should be plaintext with actual command
 
         bad_1 -> bad_2;
         bad_2 -> bad_3;
         bad_3 -> bad_4;
+    }
+
+    // =========================================================================
+    // 颜色系统速查表 (新增)
+    // =========================================================================
+    subgraph cluster_colors {
+        label="COLOR SYSTEM (Material Design)";
+        style=filled;
+        fillcolor="#ECEFF1";
+        color="#B0BEC5";
+
+        color_action [label="操作 Action\n#E3F2FD / #1565C0", fillcolor="#E3F2FD", color="#1565C0"];
+        color_decision [label="决策 Decision\n#FFF9C4 / #F9A825", fillcolor="#FFF9C4", color="#F9A825", shape=diamond];
+        color_warning [label="警告 Warning\n#D32F2F", fillcolor="#D32F2F", color="#B71C1C", fontcolor=white, shape=octagon];
+        color_state [label="状态 State\n#FFF8E1 / #FFB300", fillcolor="#FFF8E1", color="#FFB300", shape=ellipse];
+        color_start [label="起止 Start/End\n#C8E6C9", fillcolor="#C8E6C9", shape=doublecircle];
+        color_file [label="文件 File\n#FFF8E1 / #FFB300", fillcolor="#FFF8E1", color="#FFB300", shape=note];
+        color_hook [label="Hook\n#E1BEE7 / #7B1FA2", fillcolor="#E1BEE7", color="#7B1FA2"];
+        color_bad [label="错误示例\n#FFCDD2 / #C62828", fillcolor="#FFCDD2", color="#C62828"];
+        color_good [label="正确示例\n#C8E6C9 / #2E7D32", fillcolor="#C8E6C9", color="#2E7D32"];
     }
 }
