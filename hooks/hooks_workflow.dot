@@ -1,0 +1,151 @@
+digraph HooksExecutionFlow {
+    // -------------------------------------------------------------------------
+    // 全局设置
+    // -------------------------------------------------------------------------
+    rankdir=TB;
+    splines=polyline;
+    nodesep=0.6;
+    ranksep=0.8;
+    dpi=200;
+    fontname="Microsoft YaHei";
+    fontsize=16;
+    compound=true;
+    pad="0.5,0.5";
+
+    // -------------------------------------------------------------------------
+    // 节点默认样式
+    // -------------------------------------------------------------------------
+    node [
+        fontname="Microsoft YaHei",
+        fontsize=11,
+        shape=box,
+        style="filled,rounded",
+        fillcolor="#FFFFFF",
+        color="#333333",
+        penwidth=2.0,
+        margin="0.12,0.06",
+        height=0.4,
+        width=1.6
+    ];
+
+    edge [
+        fontname="Microsoft YaHei",
+        fontsize=9,
+        color="#666666",
+        penwidth=1.5,
+        arrowsize=0.7
+    ];
+
+    // -------------------------------------------------------------------------
+    // 文件标题
+    // -------------------------------------------------------------------------
+    title [label="Superpowers Hooks 执行流程", shape=plaintext, fontsize=18, fontcolor="#333333"];
+
+    // -------------------------------------------------------------------------
+    // 文件 1: hooks.json
+    // -------------------------------------------------------------------------
+    subgraph cluster_hooks_json {
+        label="① hooks.json (配置)";
+        fontsize=13;
+        style=filled;
+        color="#1976D2";
+        fillcolor="#E3F2FD";
+        penwidth=1.5;
+
+        event_trigger [label="Claude Code 事件触发\nSessionStart", fillcolor="#BBDEFB", color="#1565C0"];
+        
+        matcher [label="matcher 匹配\nstartup|resume|clear|compact", shape=diamond, fillcolor="#FFF9C4", color="#F9A825", height=0.6];
+        
+        hook_config [label="hooks 配置\ntype: command\ncommand: run-hook.cmd", fillcolor="#BBDEFB", color="#1565C0"];
+
+        event_trigger -> matcher;
+        matcher -> hook_config [label="匹配成功"];
+    }
+
+    // -------------------------------------------------------------------------
+    // 文件 2: run-hook.cmd
+    // -------------------------------------------------------------------------
+    subgraph cluster_run_hook {
+        label="② run-hook.cmd (跨平台执行器)";
+        fontsize=13;
+        style=filled;
+        color="#7B1FA2";
+        fillcolor="#F3E5F5";
+        penwidth=1.5;
+
+        polyglot_start [label="Polyglot 脚本\n同时是 .cmd 和 .sh", fillcolor="#E1BEE7", color="#7B1FA2"];
+        
+        check_os [label="检测操作系统", shape=diamond, fillcolor="#FFF9C4", color="#F9A825", height=0.5];
+        
+        windows_path [label="Windows\nC:\\Program Files\\Git\\bin\\bash.exe\n执行 session-start.sh", fillcolor="#E1BEE7", color="#7B1FA2"];
+        
+        unix_path [label="Unix/Mac\n直接执行\nsession-start.sh \"$@\"", fillcolor="#E1BEE7", color="#7B1FA2"];
+
+        polyglot_start -> check_os;
+        check_os -> windows_path [label="Windows"];
+        check_os -> unix_path [label="Unix"];
+    }
+
+    // -------------------------------------------------------------------------
+    // 文件 3: session-start.sh
+    // -------------------------------------------------------------------------
+    subgraph cluster_session_start {
+        label="③ session-start.sh (核心逻辑)";
+        fontsize=13;
+        style=filled;
+        color="#388E3C";
+        fillcolor="#E8F5E9";
+        penwidth=1.5;
+
+        set_paths [label="设置路径\nSCRIPT_DIR\nPLUGIN_ROOT", fillcolor="#C8E6C9", color="#388E3C"];
+        
+        check_legacy [label="检测旧版目录\n~/.config/superpowers/skills", fillcolor="#C8E6C9", color="#388E3C"];
+        
+        legacy_exists [label="存在?", shape=diamond, fillcolor="#FFF9C4", color="#F9A825", height=0.4];
+        
+        add_warning [label="添加迁移警告\n<important-reminder>", fillcolor="#FFCCBC", color="#E64A19"];
+        
+        read_skill [label="读取技能内容\nusing-superpowers/SKILL.md", fillcolor="#C8E6C9", color="#388E3C"];
+        
+        escape_json [label="JSON 转义\nescape_for_json()", fillcolor="#C8E6C9", color="#388E3C"];
+        
+        build_output [label="构建 JSON 输出\nhookSpecificOutput", fillcolor="#C8E6C9", color="#388E3C"];
+        
+        output_json [label="输出到 stdout\n{\n  hookSpecificOutput: {\n    additionalContext:\n    <EXTREMELY_IMPORTANT>...\n  }\n}", shape=note, fillcolor="#FFF8E1", color="#FFB300"];
+
+        set_paths -> check_legacy;
+        check_legacy -> legacy_exists;
+        legacy_exists -> add_warning [label="是"];
+        legacy_exists -> read_skill [label="否"];
+        add_warning -> read_skill;
+        read_skill -> escape_json;
+        escape_json -> build_output;
+        build_output -> output_json;
+    }
+
+    // -------------------------------------------------------------------------
+    // 最终结果
+    // -------------------------------------------------------------------------
+    subgraph cluster_result {
+        label="④ 结果";
+        fontsize=13;
+        style=filled;
+        color="#FF9800";
+        fillcolor="#FFF3E0";
+        penwidth=1.5;
+
+        claude_inject [label="Claude Code 接收 JSON\n注入到会话上下文", fillcolor="#FFE0B2", color="#EF6C00"];
+        
+        claude_ready [label="Claude 激活技能系统\n\"你拥有 superpowers\"", fillcolor="#FFE0B2", color="#EF6C00"];
+    }
+
+    // -------------------------------------------------------------------------
+    // 跨子图连线
+    // -------------------------------------------------------------------------
+    title -> event_trigger [style=invis];
+    hook_config -> polyglot_start [label="调用"];
+    windows_path -> set_paths [label="执行"];
+    unix_path -> set_paths [label="执行"];
+    output_json -> claude_inject [label="stdout"];
+    claude_inject -> claude_ready;
+}

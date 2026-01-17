@@ -1,0 +1,129 @@
+digraph HooksMigration {
+    // -------------------------------------------------------------------------
+    // 全局设置
+    // -------------------------------------------------------------------------
+    rankdir=TB;
+    splines=polyline;
+    nodesep=0.8;
+    ranksep=1.0;
+    dpi=200;
+    fontname="Microsoft YaHei";
+    fontsize=16;
+    compound=true;
+    pad="0.5,0.5";
+
+    // -------------------------------------------------------------------------
+    // 节点默认样式
+    // -------------------------------------------------------------------------
+    node [
+        fontname="Microsoft YaHei",
+        fontsize=12,
+        shape=box,
+        style="filled,rounded",
+        fillcolor="#FFFFFF",
+        color="#333333",
+        penwidth=2.0,
+        margin="0.15,0.08",
+        height=0.5,
+        width=1.6
+    ];
+
+    edge [
+        fontname="Microsoft YaHei",
+        fontsize=10,
+        color="#666666",
+        penwidth=1.5,
+        arrowsize=0.8
+    ];
+
+    // -------------------------------------------------------------------------
+    // 标题
+    // -------------------------------------------------------------------------
+    title [label="Hooks 迁移方案对比", shape=plaintext, fontsize=20, fontcolor="#333333"];
+
+    // -------------------------------------------------------------------------
+    // Superpowers 方案 (左侧)
+    // -------------------------------------------------------------------------
+    subgraph cluster_superpowers {
+        label="Superpowers (原方案)";
+        fontsize=14;
+        style=filled;
+        color="#D32F2F";
+        fillcolor="#FFEBEE";
+        penwidth=1.5;
+
+        sp_event [label="SessionStart\n事件触发", fillcolor="#FFCDD2", color="#D32F2F"];
+        sp_hooks_json [label="hooks.json\n配置钩子", fillcolor="#FFCDD2", color="#D32F2F"];
+        sp_run_hook [label="run-hook.cmd\n跨平台执行", fillcolor="#FFCDD2", color="#D32F2F"];
+        sp_session_sh [label="session-start.sh\n读取技能内容", fillcolor="#FFCDD2", color="#D32F2F"];
+        sp_inject [label="JSON 输出\n注入 Claude 上下文", fillcolor="#FFCDD2", color="#D32F2F"];
+
+        sp_event -> sp_hooks_json;
+        sp_hooks_json -> sp_run_hook;
+        sp_run_hook -> sp_session_sh;
+        sp_session_sh -> sp_inject;
+    }
+
+    // -------------------------------------------------------------------------
+    // 迁移箭头
+    // -------------------------------------------------------------------------
+    migrate [label="迁移", shape=plaintext, fontsize=14, fontcolor="#1976D2"];
+
+    // -------------------------------------------------------------------------
+    // Antigravity 方案 (右侧)
+    // -------------------------------------------------------------------------
+    subgraph cluster_antigravity {
+        label="Antigravity (新方案)";
+        fontsize=14;
+        style=filled;
+        color="#388E3C";
+        fillcolor="#E8F5E9";
+        penwidth=1.5;
+
+        ag_start [label="会话启动", fillcolor="#C8E6C9", color="#388E3C"];
+        ag_system_prompt [label="系统提示\n自动加载", fillcolor="#C8E6C9", color="#388E3C"];
+        ag_skills [label="<skills> 节\n列出所有技能", fillcolor="#A5D6A7", color="#2E7D32"];
+        ag_gemini_md [label="GEMINI.md\n全局规则", fillcolor="#A5D6A7", color="#2E7D32"];
+        ag_rules [label="rules/\n条件规则(可选)", fillcolor="#C8E6C9", color="#388E3C", style="filled,rounded,dashed"];
+        ag_ready [label="Claude 就绪\n技能已加载", fillcolor="#C8E6C9", color="#388E3C"];
+
+        ag_start -> ag_system_prompt;
+        ag_system_prompt -> ag_skills;
+        ag_system_prompt -> ag_gemini_md;
+        ag_gemini_md -> ag_rules [style=dashed, label="可选"];
+        ag_skills -> ag_ready;
+        ag_gemini_md -> ag_ready;
+    }
+
+    // -------------------------------------------------------------------------
+    // 功能对应连线
+    // -------------------------------------------------------------------------
+    edge [style=dashed, color="#1976D2", constraint=false];
+
+    sp_hooks_json -> ag_system_prompt [label="替代", fontcolor="#1976D2"];
+    sp_session_sh -> ag_skills [label="替代", fontcolor="#1976D2"];
+    sp_inject -> ag_gemini_md [label="替代", fontcolor="#1976D2"];
+
+    // -------------------------------------------------------------------------
+    // 结论节点
+    // -------------------------------------------------------------------------
+    subgraph cluster_conclusion {
+        label="结论";
+        fontsize=14;
+        style=filled;
+        color="#FF9800";
+        fillcolor="#FFF3E0";
+        penwidth=1.5;
+
+        conclusion [label="✅ 无需迁移\n功能已被 Antigravity 原生覆盖\n\n• <skills> 自动列出技能\n• GEMINI.md 定义全局规则\n• rules/ 可添加条件约束", fillcolor="#FFE0B2", color="#EF6C00", fontsize=11];
+    }
+
+    // -------------------------------------------------------------------------
+    // 布局辅助
+    // -------------------------------------------------------------------------
+    title -> sp_event [style=invis];
+    title -> ag_start [style=invis];
+    sp_inject -> migrate [style=invis];
+    migrate -> ag_ready [style=invis];
+    ag_ready -> conclusion [ltail=cluster_antigravity, lhead=cluster_conclusion];
+}

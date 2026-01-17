@@ -1,0 +1,244 @@
+digraph SuperpowersArchitecture {
+    // -------------------------------------------------------------------------
+    // 全局设置
+    // -------------------------------------------------------------------------
+    rankdir=LR;
+    splines=polyline;
+    nodesep=0.6;
+    ranksep=1.0;
+    dpi=200;
+    fontname="Microsoft YaHei";
+    fontsize=18;
+    compound=true;
+    pad="0.5,0.5";
+
+    // -------------------------------------------------------------------------
+    // 节点默认样式
+    // -------------------------------------------------------------------------
+    node [
+        fontname="Microsoft YaHei",
+        fontsize=12,
+        shape=box,
+        style="filled,rounded",
+        fillcolor="#FFFFFF",
+        color="#333333",
+        penwidth=2.0,
+        margin="0.15,0.08",
+        height=0.5,
+        width=1.4
+    ];
+
+    edge [
+        fontname="Microsoft YaHei",
+        fontsize=10,
+        color="#666666",
+        penwidth=1.5,
+        arrowsize=0.8
+    ];
+
+    // -------------------------------------------------------------------------
+    // 起止节点
+    // -------------------------------------------------------------------------
+    start [label="Start\n用户任务", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.9, height=0.9, fontsize=11];
+    end [label="End\n任务完成", shape=doublecircle, style=filled, fillcolor="#C8E6C9", width=0.9, height=0.9, fontsize=11];
+
+    // -------------------------------------------------------------------------
+    // Entry Layer: 入口层
+    // -------------------------------------------------------------------------
+    subgraph cluster_entry {
+        label="Entry Layer (入口)";
+        fontsize=14;
+        style=filled;
+        color="#1976D2";
+        fillcolor="#E3F2FD";
+        penwidth=1.5;
+
+        commands [label="commands/\nbrainstorm.md\nwrite-plan.md\nexecute-plan.md", fillcolor="#BBDEFB", color="#1565C0", fontsize=10];
+        hooks [label="hooks/\nhooks.json\nsession-start.sh\nrun-hook.cmd", fillcolor="#BBDEFB", color="#1565C0", fontsize=10];
+    }
+
+    // -------------------------------------------------------------------------
+    // Phase 1: 设计阶段
+    // -------------------------------------------------------------------------
+    subgraph cluster_design {
+        label="Phase 1: 设计阶段";
+        fontsize=14;
+        style=filled;
+        color="#388E3C";
+        fillcolor="#E8F5E9";
+        penwidth=1.5;
+
+        brainstorming [label="brainstorming\n头脑风暴", fillcolor="#C8E6C9", color="#388E3C"];
+        writing_plans [label="writing-plans\n计划制定", fillcolor="#C8E6C9", color="#388E3C"];
+        using_worktrees [label="using-git-worktrees\n工作树隔离", fillcolor="#C8E6C9", color="#388E3C"];
+
+        brainstorming -> writing_plans [label="保存设计"];
+        brainstorming -> using_worktrees [label="创建隔离"];
+    }
+
+    // -------------------------------------------------------------------------
+    // Phase 2: 实现阶段
+    // -------------------------------------------------------------------------
+    subgraph cluster_impl {
+        label="Phase 2: 实现阶段 (Loop)";
+        fontsize=14;
+        style=filled;
+        color="#1565C0";
+        fillcolor="#E3F2FD";
+        penwidth=1.5;
+
+        subagent_dev [label="subagent-driven-dev\n子Agent开发", fillcolor="#BBDEFB", color="#1565C0"];
+        executing_plans [label="executing-plans\n批量执行", fillcolor="#BBDEFB", color="#1565C0"];
+        dispatching_parallel [label="dispatching-parallel\n并行Agent调度", fillcolor="#BBDEFB", color="#1565C0"];
+
+        is_same_session [label="同一会话?", shape=diamond, fillcolor="#FFF9C4", color="#F9A825", width=1.2, height=1.0];
+        
+        is_same_session -> subagent_dev [label="是"];
+        is_same_session -> executing_plans [label="否"];
+        dispatching_parallel -> subagent_dev [label="多任务", style=dashed];
+    }
+
+    // -------------------------------------------------------------------------
+    // Phase 3: 质量保障
+    // -------------------------------------------------------------------------
+    subgraph cluster_quality {
+        label="Phase 3: 质量保障";
+        fontsize=14;
+        style=filled;
+        color="#7B1FA2";
+        fillcolor="#F3E5F5";
+        penwidth=1.5;
+
+        tdd [label="test-driven-dev\nTDD", fillcolor="#E1BEE7", color="#7B1FA2"];
+        systematic_debug [label="systematic-debugging\n系统化调试", fillcolor="#E1BEE7", color="#7B1FA2"];
+        code_review [label="requesting-code-review\n请求审查", fillcolor="#E1BEE7", color="#7B1FA2"];
+        receiving_review [label="receiving-code-review\n接收反馈", fillcolor="#E1BEE7", color="#7B1FA2"];
+        verification [label="verification\n完成验证", fillcolor="#E1BEE7", color="#7B1FA2"];
+
+        tdd -> verification [label="实现后"];
+        systematic_debug -> tdd [label="修复时", style=dashed];
+        code_review -> receiving_review [label="收到反馈"];
+    }
+
+    // -------------------------------------------------------------------------
+    // Phase 4: 收尾阶段
+    // -------------------------------------------------------------------------
+    subgraph cluster_finish {
+        label="Phase 4: 收尾";
+        fontsize=14;
+        style=filled;
+        color="#EF6C00";
+        fillcolor="#FFF3E0";
+        penwidth=1.5;
+
+        finishing_branch [label="finishing-a-dev-branch\n分支收尾", fillcolor="#FFE0B2", color="#EF6C00"];
+        merge_option [label="合并/PR/保留/丢弃", shape=diamond, fillcolor="#FFF9C4", color="#F9A825", width=1.5, height=1.0, fontsize=10];
+
+        finishing_branch -> merge_option;
+    }
+
+    // -------------------------------------------------------------------------
+    // Agents: Agent角色
+    // -------------------------------------------------------------------------
+    subgraph cluster_agents {
+        label="Agents (子Agent角色)";
+        fontsize=14;
+        style=filled;
+        color="#F57C00";
+        fillcolor="#FFF8E1";
+        penwidth=1.5;
+
+        code_reviewer_agent [label="code-reviewer\n高级审查员", fillcolor="#FFECB3", color="#F57C00"];
+        implementer_agent [label="implementer\n实现者", fillcolor="#FFECB3", color="#F57C00"];
+        spec_reviewer_agent [label="spec-reviewer\n规格审查", fillcolor="#FFECB3", color="#F57C00"];
+    }
+
+    // -------------------------------------------------------------------------
+    // Meta Skills: 元技能
+    // -------------------------------------------------------------------------
+    subgraph cluster_meta {
+        label="Meta Skills (元技能)";
+        fontsize=14;
+        style=filled;
+        color="#546E7A";
+        fillcolor="#ECEFF1";
+        penwidth=1.5;
+
+        using_superpowers [label="using-superpowers\n使用指南", fillcolor="#CFD8DC", color="#546E7A"];
+        writing_skills [label="writing-skills\n编写技能", fillcolor="#CFD8DC", color="#546E7A"];
+    }
+
+    // -------------------------------------------------------------------------
+    // Core Library: 核心库
+    // -------------------------------------------------------------------------
+    subgraph cluster_lib {
+        label="Core Library";
+        fontsize=14;
+        style=filled;
+        color="#5D4037";
+        fillcolor="#EFEBE9";
+        penwidth=1.5;
+
+        skills_core [label="lib/skills-core.js\nextractFrontmatter()\nfindSkillsInDir()\nresolveSkillPath()", fillcolor="#D7CCC8", color="#5D4037", fontsize=10];
+    }
+
+    // -------------------------------------------------------------------------
+    // 辅助文件节点 (独立放置)
+    // -------------------------------------------------------------------------
+    node [shape=note, style="filled", fillcolor="#FFF8E1", color="#FFB300", fontsize=10, width=1.0, height=0.5];
+    
+    helper_sdd [label="subagent-prompts/\nimplementer-prompt.md\nspec-reviewer-prompt.md"];
+    helper_debug [label="debugging-helpers/\nroot-cause-tracing.md\ndefense-in-depth.md"];
+    helper_tdd [label="tdd-helpers/\ntesting-anti-patterns.md"];
+    helper_writing [label="writing-helpers/\nanthropric-best-practices.md\ngraphviz-conventions.dot"];
+
+    // -------------------------------------------------------------------------
+    // 主流程连线
+    // -------------------------------------------------------------------------
+    start -> commands [lhead=cluster_entry];
+
+    // 入口 -> 设计
+    commands -> brainstorming [label="触发", lhead=cluster_design];
+    hooks -> using_superpowers [label="SessionStart"];
+
+    // 设计 -> 实现
+    writing_plans -> is_same_session [ltail=cluster_design, lhead=cluster_impl];
+    using_worktrees -> subagent_dev [style=dashed, label="环境"];
+
+    // 实现 -> 质量
+    subagent_dev -> tdd [label="每个Task", lhead=cluster_quality];
+    subagent_dev -> code_review [label="Task完成"];
+    executing_plans -> code_review [label="批次完成"];
+
+    // 实现 -> Agent调度
+    edge [color="#F57C00", style=bold];
+    subagent_dev -> implementer_agent [label="调度"];
+    subagent_dev -> spec_reviewer_agent [label="调度"];
+    code_review -> code_reviewer_agent [label="调度"];
+
+    // 质量 -> 收尾
+    edge [color="#666666", style=solid];
+    verification -> finishing_branch [ltail=cluster_quality, lhead=cluster_finish];
+    
+    // 收尾 -> 结束
+    merge_option -> end;
+
+    // 循环回路
+    edge [color="#D32F2F", style=dashed];
+    receiving_review -> subagent_dev [label="修复问题\n(Loop)", ltail=cluster_quality, lhead=cluster_impl];
+    finishing_branch -> using_worktrees [label="清理工作树", style=dotted, color="#888888"];
+
+    // -------------------------------------------------------------------------
+    // 辅助文件交互 (虚线)
+    // -------------------------------------------------------------------------
+    edge [color="#757575", style=dotted, penwidth=1.2, arrowsize=0.6, constraint=false];
+    subagent_dev -> helper_sdd [label="使用模板"];
+    systematic_debug -> helper_debug [label="参考"];
+    tdd -> helper_tdd [label="参考"];
+    writing_skills -> helper_writing [label="参考"];
+
+    // -------------------------------------------------------------------------
+    // 布局辅助
+    // -------------------------------------------------------------------------
+    {rank=sink; helper_sdd; helper_debug; helper_tdd; helper_writing}
+}
