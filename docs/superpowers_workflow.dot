@@ -1,0 +1,243 @@
+digraph superpowers_workflow {
+    // Superpowers 核心工作流程图
+    // 基于 graphviz-conventions.dot 样式规范
+    
+    // =========================================================================
+    // 全局设置
+    // =========================================================================
+    rankdir=LR;
+    splines=polyline;
+    nodesep=0.8;
+    ranksep=1.0;
+    dpi=200;
+    pad="0.5,0.5";
+    compound=true;
+
+    fontname="Microsoft YaHei";
+    fontsize=16;
+
+    // 节点默认样式
+    node [
+        fontname="Microsoft YaHei",
+        fontsize=12,
+        shape=box,
+        style="filled,rounded",
+        fillcolor="#FFFFFF",
+        color="#333333",
+        penwidth=2.0,
+        margin="0.15,0.08"
+    ];
+
+    // 边默认样式
+    edge [
+        fontname="Microsoft YaHei",
+        fontsize=10,
+        color="#666666",
+        penwidth=1.5,
+        arrowsize=0.8
+    ];
+
+    // =========================================================================
+    // 起点
+    // =========================================================================
+    start [label="用户提出想法", shape=doublecircle, fillcolor="#C8E6C9"];
+
+    // =========================================================================
+    // 设计阶段
+    // =========================================================================
+    subgraph cluster_design {
+        label="🎨 设计阶段";
+        style=filled;
+        fillcolor="#E3F2FD";
+        color="#1565C0";
+
+        brainstorming [
+            label="Brainstorming\n━━━━━━━━━━━━\n• 苏格拉底式提问\n• 探索替代方案\n• 分段展示设计",
+            fillcolor="#E3F2FD",
+            color="#1565C0"
+        ];
+        
+        spec_approved [
+            label="设计已批准?",
+            shape=diamond,
+            fillcolor="#FFF9C4",
+            color="#F9A825"
+        ];
+        
+        spec_doc [
+            label="📄 设计文档",
+            shape=note,
+            fillcolor="#FFF8E1",
+            color="#FFB300"
+        ];
+    }
+
+    // =========================================================================
+    // 环境准备阶段
+    // =========================================================================
+    subgraph cluster_env {
+        label="🔧 环境准备";
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#2E7D32";
+
+        git_worktree [
+            label="Using Git Worktrees\n━━━━━━━━━━━━━━━\n• 创建隔离工作区\n• 新建功能分支\n• 验证测试基线",
+            fillcolor="#C8E6C9",
+            color="#2E7D32"
+        ];
+        
+        git_worktree_new [
+            label="git worktree add",
+            shape=plaintext,
+            fontname="Consolas",
+            fontsize=10
+        ];
+    }
+
+    // =========================================================================
+    // 计划阶段
+    // =========================================================================
+    subgraph cluster_plan {
+        label="📋 计划阶段";
+        style=filled;
+        fillcolor="#FFF3E0";
+        color="#E65100";
+
+        writing_plans [
+            label="Writing Plans\n━━━━━━━━━━━━\n• 拆分2-5分钟任务\n• 精确文件路径\n• 完整代码示例",
+            fillcolor="#FFE0B2",
+            color="#E65100"
+        ];
+        
+        plan_doc [
+            label="📋 实现计划",
+            shape=note,
+            fillcolor="#FFF8E1",
+            color="#FFB300"
+        ];
+    }
+
+    // =========================================================================
+    // 执行阶段
+    // =========================================================================
+    subgraph cluster_execute {
+        label="⚡ 执行阶段";
+        style=filled;
+        fillcolor="#E1BEE7";
+        color="#7B1FA2";
+
+        subagent [
+            label="Subagent-Driven Dev\n━━━━━━━━━━━━━━━━\n• 每任务独立子代理\n• 双阶段审查流程",
+            fillcolor="#E1BEE7",
+            color="#7B1FA2"
+        ];
+        
+        tdd [
+            label="Test-Driven Dev\n━━━━━━━━━━━━\n🔴 写失败测试\n🟢 最小实现\n🔵 重构清理",
+            fillcolor="#E3F2FD",
+            color="#1565C0"
+        ];
+        
+        test_pass [
+            label="测试通过?",
+            shape=diamond,
+            fillcolor="#FFF9C4",
+            color="#F9A825"
+        ];
+        
+        code_review [
+            label="Requesting Code Review\n━━━━━━━━━━━━━━━━━━\n• 对照计划审查\n• 按严重性报告",
+            fillcolor="#E3F2FD",
+            color="#1565C0"
+        ];
+        
+        all_tasks_done [
+            label="所有任务完成?",
+            shape=diamond,
+            fillcolor="#FFF9C4",
+            color="#F9A825"
+        ];
+    }
+
+    // =========================================================================
+    // 调试分支
+    // =========================================================================
+    subgraph cluster_debug {
+        label="🔍 调试";
+        style=filled;
+        fillcolor="#FFCDD2";
+        color="#C62828";
+
+        systematic_debug [
+            label="Systematic Debugging\n━━━━━━━━━━━━━━━━\n• 4阶段根因分析\n• 证据驱动",
+            fillcolor="#FFCDD2",
+            color="#C62828"
+        ];
+        
+        verification [
+            label="Verification\n━━━━━━━━━━━━\n确保真正修复",
+            fillcolor="#FFCDD2",
+            color="#C62828"
+        ];
+    }
+
+    // =========================================================================
+    // 完成阶段
+    // =========================================================================
+    subgraph cluster_finish {
+        label="🏁 完成阶段";
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#2E7D32";
+
+        finishing [
+            label="Finishing Branch\n━━━━━━━━━━━━━\n• 验证所有测试\n• 合并/PR/保留/丢弃",
+            fillcolor="#C8E6C9",
+            color="#2E7D32"
+        ];
+        
+        merge_choice [
+            label="如何处理?",
+            shape=diamond,
+            fillcolor="#FFF9C4",
+            color="#F9A825"
+        ];
+    }
+
+    // 终点
+    done [label="✅ 功能完成", shape=doublecircle, fillcolor="#C8E6C9"];
+    discard [label="❌ 丢弃分支", shape=octagon, style=filled, fillcolor="#D32F2F", color="#B71C1C", fontcolor=white];
+
+    // =========================================================================
+    // 主流程连接
+    // =========================================================================
+    start -> brainstorming;
+    brainstorming -> spec_doc [style=dotted, arrowhead=none];
+    brainstorming -> spec_approved;
+    spec_approved -> brainstorming [label="继续迭代"];
+    spec_approved -> git_worktree [label="批准"];
+    
+    git_worktree -> git_worktree_new [style=dotted, arrowhead=none];
+    git_worktree -> writing_plans;
+    writing_plans -> plan_doc [style=dotted, arrowhead=none];
+    writing_plans -> subagent;
+    
+    // 执行循环
+    subagent -> tdd;
+    tdd -> test_pass;
+    test_pass -> code_review [label="通过"];
+    test_pass -> systematic_debug [label="失败", style=dashed, color="#D32F2F"];
+    
+    systematic_debug -> verification;
+    verification -> tdd [label="继续"];
+    
+    code_review -> all_tasks_done;
+    all_tasks_done -> subagent [label="下一个任务"];
+    all_tasks_done -> finishing [label="全部完成"];
+    
+    // 完成分支
+    finishing -> merge_choice;
+    merge_choice -> done [label="合并/PR"];
+    merge_choice -> discard [label="丢弃"];
+}
